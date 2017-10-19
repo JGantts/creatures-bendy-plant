@@ -40,6 +40,27 @@ scrp 2 3 24401 9
 		subv va01 108
 		new: comp 2 4 24401 "bendyPlant" 26 1 292
 		setv ov00 rand 0 1
+
+*		Spring color
+		setv ov10 140
+		setv ov11 100
+		setv ov12 40
+
+*		Summer color
+		setv ov13 128
+		setv ov14 255
+		setv ov15 128
+
+*		Autunm color
+		setv ov16 128
+		setv ov17 128
+		setv ov18 128
+
+*		Winter color
+		setv ov19 128
+		setv ov20 128
+		setv ov21 255
+
 		tick 20
 		mvto va00 va01
 		kill ownr
@@ -69,7 +90,7 @@ scrp 2 4 24401 9
 * flower grow spring-fall
 	pat: dull 1 "bendyPlant" 27 0 0 1
 	part 1
-	tint rand 64 192 rand 64 128 rand 64 192 128 128
+	tint mv10 mv11 mv12 128 128
 	frat 4
 	wait 20
 	pose 1
@@ -93,9 +114,14 @@ scrp 2 4 24401 9
 * stem summer
 	part 0
 	pose 9
+	part 1
+	tint mv13 mv14 mv15 128 128
 	wait 100
 * stem autumn
+	part 0
 	pose 12
+	part 1
+	tint mv16 mv17 mv18 128 128
 	wait 100
 * flower wilt
 	part 1
@@ -121,7 +147,7 @@ scrp 2 4 24401 9
 * flower grow winter
 	pat: dull 1 "bendyPlant" 27 0 0 1
 	part 1
-	tint rand 64 255 64 rand 64 255 128 128
+	tint mv19 mv20 mv21 128 128
 	frat 4
 	wait 20
 	pose 1
