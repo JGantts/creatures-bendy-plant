@@ -103,10 +103,10 @@ scrp 2 4 24401 9
 	wait 20
 * flower fade out
 	setv va00 0
-	slow
 	loop
 		alph va00 1
-		addv va00 4
+		addv va00 8
+		wait 1
 	untl va00 >= 256
 	pat: kill 1
 * stem freeze
@@ -134,10 +134,10 @@ scrp 2 4 24401 9
 	wait 20
 * flower fade out
 	setv va00 0
-	slow
 	loop
 		alph va00 1
-		addv va00 4
+		addv va00 8
+		wait 1
 	untl va00 >= 256
 	pat: kill 1
 * stem melt
