@@ -1,0 +1,19 @@
+TAG "bendyPlantColor Spring"
+"140 100 040"
+"140 080 020"
+"140 060 000"
+"120 060 080"
+"140 060 060"
+"040 100 180"
+"060 120 140"
+"060 080 160"
+"000 080 100"
+
+TAG "bendyPlantColor Summer"
+"200 100 000"
+
+TAG "bendyPlantColor Autumn"
+"140 060 000"
+
+TAG "bendyPlantColor Winter"
+"200 100 255"
