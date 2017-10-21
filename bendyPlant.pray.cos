@@ -108,8 +108,8 @@ scrp 2 4 24401 9
 *		else
 *			should already be spring stem.
 *			should also be only ~1 tick after became spring stem
+		wait 50
 	endi
-	wait 50
 *set image offset for using the alternative mature stalk
 	base ov00
 * flower grow spring-fall
