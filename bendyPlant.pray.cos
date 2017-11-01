@@ -94,6 +94,7 @@ scrp 2 3 24401 9
 		setv ov21 stoi va14
 
 *tick 20
+		tick 20
 		mvto va00 va01
 		kill ownr
 		slow
