@@ -38,9 +38,16 @@ scrp 2 3 24401 9
 		subv va00 20
 		setv va01 post
 		subv va01 108
-		new: comp 2 4 24401 "bendyPlant" 26 1 292
-*	random image (flower type)
-		setv ov00 rand 0 1
+		new: comp 2 4 24401 "bendyPlant" 52 1 292
+*	random image (facing direction and stalk type)
+		setv ov00 rand 0 3
+		doif ov00 = 0 or ov00 = 2
+*		facing right
+*			pose 0
+		else
+*		facing left
+			pose 1
+		endi
 
 *		Spring color
 		setv va10 rean "bendyPlantColor Spring"
@@ -86,7 +93,7 @@ scrp 2 3 24401 9
 		setv ov20 stoi va13
 		setv ov21 stoi va14
 
-		tick 20
+*tick 20
 		mvto va00 va01
 		kill ownr
 		slow
@@ -96,15 +103,22 @@ scrp 2 3 24401 9
 endm
 
 scrp 2 4 24401 9
-	doif pose = 0
+	doif pose = 0 or pose = 1
+		doif ov00 = 0 or ov00 = 2
+*		facing right
+			base 0
+		else
+*		facing left
+			base 1
+		endi
 * stem grow spring
-		pose 1
-		wait 20
 		pose 2
+		wait 20
+		pose 4
 *set image offset for using the alternative mature stalk
 		base ov00
 		wait 20
-		pose 3
+		pose 6
 *		else
 *			should already be spring stem.
 *			should also be only ~1 tick after became spring stem
@@ -113,9 +127,18 @@ scrp 2 4 24401 9
 *set image offset for using the alternative mature stalk
 	base ov00
 * flower grow spring-fall
-	pat: dull 1 "bendyPlant" 27 0 0 1
+	doif ov00 = 0 or ov00 = 2
+*	facing right
+		setv va01 53
+	else
+*	facing left
+		setv va01 61
+	endi
+	inst
+	pat: dull 1 "bendyPlant" va01 0 0 1
 	part 1
 	tint mv10 mv11 mv12 128 128
+	slow
 	frat 4
 	wait 20
 	pose 1
@@ -138,13 +161,13 @@ scrp 2 4 24401 9
 	wait 50
 * stem summer
 	part 0
-	pose 9
+	pose 18
 	part 1
 	tint mv13 mv14 mv15 128 128
 	wait 100
 * stem autumn
 	part 0
-	pose 12
+	pose 24
 	part 1
 	tint mv16 mv17 mv18 128 128
 	wait 100
@@ -162,17 +185,26 @@ scrp 2 4 24401 9
 	pat: kill 1
 * stem freeze
 	part 0
-	pose 15
+	pose 30
 	wait 20
-	pose 17
+	pose 34
 	wait 20
 * stem winter
-	pose 19
+	pose 38
 	wait 50
 * flower grow winter
-	pat: dull 1 "bendyPlant" 27 0 0 1
+	doif ov00 = 0 or ov00 = 2
+*	facing right
+		setv va01 53
+	else
+*	facing left
+		setv va01 61
+	endi
+	inst
+	pat: dull 1 "bendyPlant" va01 0 0 1
 	part 1
 	tint mv19 mv20 mv21 128 128
+	slow
 	frat 4
 	wait 20
 	pose 1
@@ -193,12 +225,12 @@ scrp 2 4 24401 9
 	pat: kill 1
 * stem melt
 	part 0
-	pose 22
+	pose 44
 	wait 20
-	pose 24
+	pose 48
 	wait 20
 * stem spring
-	pose 3
+	pose 6
 	wait 100
 	base 0
 	tick 1
