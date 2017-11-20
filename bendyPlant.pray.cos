@@ -17,9 +17,21 @@ perm 64
 elas 15
 accg 6
 fric 95
-setv va00 game "CreatorY"
-subv va00 hght
-mvto game "CreatorX" va00
+setv name "sean" 0
+
+setv va42 0
+doif va42 = 0
+* actual injection location
+*	in comms room
+	setv va00 game "CreatorY"
+	subv va00 hght
+	mvto game "CreatorX" va00
+elif va42 = 1
+* testing injection location
+*	near hand. Random x offset, so help scatter seeds
+	setv va00 mopy
+	mvsf mopx va00
+endi
 tick 200
 
 scrp 2 3 24401 9
@@ -99,11 +111,18 @@ scrp 2 3 24401 9
 	setv ov00 rand 0 3
 	doif ov00 = 0 or ov00 = 2
 *	facing right
-*	pose 0
+*		pose 0
+		sets name "dir" "right"
 	else
 *	facing left
 		pose 1
+		sets name "dir" "left"
 	endi
+	sets name "state" "sprout"
+*	name "sean" for pose etc.
+*		set from seed
+*		(injected seed is spring, so it'll always grow)
+	setv name "sean" mame "sean"
 
 *	Spring color
 	setv va10 rean "bendyPlantColor Spring"
@@ -169,12 +188,10 @@ scrp 2 3 24401 9
 endm
 
 scrp 2 4 24401 9
-	doif pose = 0 or pose = 1
-		doif ov00 = 0 or ov00 = 2
-*		facing right
+	doif mame "state" = "sprout"
+		doif mame "dir" = "right"
 			base 0
 		else
-*		facing left
 			base 1
 		endi
 * stem grow spring
@@ -185,123 +202,199 @@ scrp 2 4 24401 9
 		base ov00
 		wait 20
 		pose 6
-*		else
-*			should already be spring stem.
-*			should also be only ~1 tick after became spring stem
-		wait 50
-	endi
+		sets mame "state" "stalk"
+		tick 50
+	elif mame "state" = "stalk"
+		gsub checkSean
 *set image offset for using the alternative mature stalk
-	base ov00
-* flower grow spring-fall
-	doif ov00 = 0 or ov00 = 2
-*	facing right
-		setv va01 53
-	else
-*	facing left
-		setv va01 61
+		base ov00
+* flower grow
+		doif mame "dir" = "right"
+			setv va01 53
+		else
+			setv va01 61
+		endi
+		inst
+		pat: dull 1 "bendyPlant" va01 0 0 1
+		part 1
+*		set flower color based on season
+		doif mame "sean" = 0
+			tint mv10 mv11 mv12 128 128
+		elif mame "sean" = 1
+			tint mv13 mv14 mv15 128 128
+		elif mame "sean" = 2
+			tint mv16 mv17 mv18 128 128
+		elif mame "sean" = 3
+			tint mv19 mv20 mv21 128 128
+		endi
+*		grow flower
+		wait 20
+		pose 1
+		wait 20
+		pose 2
+		wait 50
+		sets mame "state" "flower"
+		tick 500
+		slow
+	elif mame "state" = "flower"
+		gsub checkSean
+*		*dbg: outs "shooting!"
+		part 1
+*shoot a seed!
+*	flower close
+		pose 3
+		wait 20
+		pose 4
+		wait 40
+*	flower shoot
+		anim [5 5 6 4]
+		over
+		wait 40
+*	flower close
+		pose 3
+		wait 20
+		pose 2
 	endi
-	inst
-	pat: dull 1 "bendyPlant" va01 0 0 1
-	part 1
-	tint mv10 mv11 mv12 128 128
-	slow
-	frat 4
-	wait 20
-	pose 1
-	wait 20
-	pose 2
-	wait 40
-* flower close
-	pose 3
-	wait 20
-	pose 4
-	wait 40
-* flower shoot
-	anim [5 5 6 4]
-	over
-	wait 40
-* flower close
-	pose 3
-	wait 20
-	pose 2
-	wait 50
-* stem summer
-	part 0
-	pose 18
-	part 1
-	tint mv13 mv14 mv15 128 128
-	wait 100
-* stem autumn
-	part 0
-	pose 24
-	part 1
-	tint mv16 mv17 mv18 128 128
-	wait 100
-* flower wilt
-	part 1
-	pose 7
-	wait 20
-* flower fade out
-	setv va00 0
-	loop
-		alph va00 1
-		addv va00 8
-		wait 1
-	untl va00 >= 256
-	ucln
-	pat: kill 1
-* stem freeze
-	part 0
-	pose 30
-	wait 20
-	pose 34
-	wait 20
-* stem winter
-	pose 38
-	wait 50
-* flower grow winter
-	doif ov00 = 0 or ov00 = 2
-*	facing right
-		setv va01 53
-	else
-*	facing left
-		setv va01 61
-	endi
-	inst
-	pat: dull 1 "bendyPlant" va01 0 0 1
-	part 1
-	tint mv19 mv20 mv21 128 128
-	slow
-	frat 4
-	wait 20
-	pose 1
-	wait 20
-	pose 2
-	wait 50
-* flower wilt
-	part 1
-	pose 7
-	wait 20
-* flower fade out
-	setv va00 0
-	loop
-		alph va00 1
-		addv va00 8
-		wait 1
-	untl va00 >= 256
-	ucln
-	pat: kill 1
-* stem melt
-	part 0
-	pose 44
-	wait 20
-	pose 48
-	wait 20
-* stem spring
-	pose 6
-	wait 100
-	base 0
-	tick 1
+
+*	wait 100
+*
+*	wait 100
+*
+*	slow
+
+
+
+	subr checkSean
+*		*dbg: outs "checking season"
+		doif mame "sean" <> sean
+*			plant's internal season needs to be fixed
+			doif mame "state" = "sprout"
+*				Don't really do anything
+			else
+*dbg: outs "fixing sean and pose. new sean:"
+*dbg: outv sean
+				wait 40
+*	   actually elif mame "state" = "stalk" or mame "state" = "flower"
+*				Fix it
+				inst
+				lock
+				setv mame "sean" sean
+				doif mame "sean" = 0
+* change to spring
+					doif mame "state" = "flower"
+*				flower wilt
+						part 1
+						pose 7
+						wait 20
+*				flower fade out
+						setv va00 0
+						loop
+							alph va00 1
+							addv va00 8
+							wait 1
+						untl va00 >= 256
+						ucln
+						pat: kill 1
+					endi
+*				stem melt
+					part 0
+					pose 44
+					wait 20
+					pose 48
+					wait 20
+*				stem spring
+					pose 6
+					wait 100
+					base 0
+					doif mame "state" = "flower"
+*					flower grow spring
+*					set flower direction
+						doif mame "dir" = "right"
+							setv va01 53
+						else
+							setv va01 61
+						endi
+						inst
+						pat: dull 1 "bendyPlant" va01 0 0 1
+						part 1
+						tint mv10 mv11 mv12 128 128
+*					grow flower
+						wait 20
+						pose 1
+						wait 20
+						pose 2
+					endi
+					wait 200
+				elif mame "sean" = 1
+* change to summer
+*					change stem
+					part 0
+					pose 18
+					doif mame "state" = "flower"
+*						change flower
+						part 1
+						tint mv13 mv14 mv15 128 128
+					endi
+					wait 200
+				elif mame "sean" = 2
+* change to autumn
+*				stem autumn
+					part 0
+					pose 24
+					doif mame "state" = "flower"
+						part 1
+						tint mv16 mv17 mv18 128 128
+					endi
+					wait 200
+				elif mame "sean" = 3
+* change to winter
+					doif mame "state" = "flower"
+*					flower wilt
+						part 1
+						pose 7
+						wait 20
+*					flower fade out
+						setv va00 0
+						loop
+							alph va00 1
+							addv va00 8
+							wait 1
+						untl va00 >= 256
+						ucln
+						pat: kill 1
+					endi
+*				stem freeze
+					part 0
+					pose 30
+					wait 20
+					pose 34
+					wait 20
+*				stem winter
+					pose 38
+					wait 50
+					doif mame "state" = "flower"
+*					flower grow winter
+*					set flower direction
+						doif mame "dir" = "right"
+							setv va01 53
+						else
+							setv va01 61
+						endi
+						inst
+						pat: dull 1 "bendyPlant" va01 0 0 1
+						part 1
+						tint mv19 mv20 mv21 128 128
+*					grow flower
+						wait 20
+						pose 1
+						wait 20
+						pose 2
+					endi
+					wait 200
+				endi
+			endi
+		endi
+	retn
 endm
 
 rscr
