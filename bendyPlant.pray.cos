@@ -248,6 +248,7 @@ scrp 2 4 24401 9
 		addv va00 8
 		wait 1
 	untl va00 >= 256
+	ucln
 	pat: kill 1
 * stem freeze
 	part 0
@@ -288,6 +289,7 @@ scrp 2 4 24401 9
 		addv va00 8
 		wait 1
 	untl va00 >= 256
+	ucln
 	pat: kill 1
 * stem melt
 	part 0
