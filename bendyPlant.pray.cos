@@ -20,7 +20,7 @@ fric 95
 setv va00 game "CreatorY"
 subv va00 hght
 mvto game "CreatorX" va00
-tick 20
+tick 200
 
 scrp 2 3 24401 9
 	doif carr <> null or fall <> 0
@@ -30,77 +30,142 @@ scrp 2 3 24401 9
 		tick 20
 		stop
 	endi
-	doif rtyp room ownr >= 5 and rtyp room ownr <= 7
-* room type is soil
-		inst
-* calculate location of new plant agent
-		setv va00 posl
-		subv va00 20
-		setv va01 post
-		subv va01 108
-		new: comp 2 4 24401 "bendyPlant" 52 1 292
-*	random image (facing direction and stalk type)
-		setv ov00 rand 0 3
-		doif ov00 = 0 or ov00 = 2
-*		facing right
-*			pose 0
-		else
-*		facing left
-			pose 1
-		endi
-
-*		Spring color
-		setv va10 rean "bendyPlantColor Spring"
-		subv va10 1
-		sets va11 read "bendyPlantColor Spring" rand 0 va10
-		sets va12 subs va11 1 3
-		sets va13 subs va11 5 3
-		sets va14 subs va11 9 3
-		setv ov10 stoi va12
-		setv ov11 stoi va13
-		setv ov12 stoi va14
-
-*		Summer color
-		setv va10 rean "bendyPlantColor Summer"
-		subv va10 1
-		sets va11 read "bendyPlantColor Summer" rand 0 va10
-		sets va12 subs va11 1 3
-		sets va13 subs va11 5 3
-		sets va14 subs va11 9 3
-		setv ov13 stoi va12
-		setv ov14 stoi va13
-		setv ov15 stoi va14
-
-*		Autunm color
-		setv va10 rean "bendyPlantColor Autumn"
-		subv va10 1
-		sets va11 read "bendyPlantColor Autumn" rand 0 va10
-		sets va12 subs va11 1 3
-		sets va13 subs va11 5 3
-		sets va14 subs va11 9 3
-		setv ov16 stoi va12
-		setv ov17 stoi va13
-		setv ov18 stoi va14
-
-*		Winter color
-		setv va10 rean "bendyPlantColor Winter"
-		subv va10 1
-		sets va11 read "bendyPlantColor Winter" rand 0 va10
-		sets va12 subs va11 1 3
-		sets va13 subs va11 5 3
-		sets va14 subs va11 9 3
-		setv ov19 stoi va12
-		setv ov20 stoi va13
-		setv ov21 stoi va14
-
-*tick 20
-		tick 20
-		mvto va00 va01
-		kill ownr
-		slow
-	else
-* room type is not soil
+	doif rtyp room ownr < 5 or rtyp room ownr > 7
+*dbg: outs "<<bendy plant seed>> not soil"
+		gsub rot
 	endi
+*	check room properties
+*		Get Local Room ID
+	targ ownr
+	setv va00 grap posx posy
+*		really dark?
+	doif prop va00 1 < .01
+*dbg: outs "<<bendy plant seed>> too dark"
+		gsub rot
+	endi
+	doif prop va00 3 < .01
+*dbg: outs "<<bendy plant seed>> too dry"
+		gsub rot
+	endi
+	doif prop va00 4 < .01
+*dbg: outs "<<bendy plant seed>> too few nutrients"
+		gsub rot
+	endi
+	setv va40 0
+*	check population touching
+	etch 2 4 24401
+		gsub rot
+*dbg: outs "<<bendy plant seed>> stop touching me!"
+	next
+*	check population for 1 within 100 pixels
+	rnge 100
+	esee 2 4 24401
+		addv va40 1
+	next
+	doif va40 > 1
+*dbg: outs "<<bendy plant seed>> too crowded, 100"
+		gsub rot
+	endi
+*	check population for 5 within 1000 pixels
+	rnge 1000
+	esee 2 4 24401
+		addv va40 1
+	next
+	doif va40 > 5
+*dbg: outs "<<bendy plant seed>> too crowded, 1000"
+		gsub rot
+	endi
+*	check map boundries
+	doif obst _UP_ < 130
+*dbg: outs "<<bendy plant seed>> not enough room upwards"
+		gsub rot
+	endi
+	mvby 0 -100
+	doif obst LEFT < 35 or obst RGHT < 35
+*dbg: outs "<<bendy plant seed>> not enough room left or right"
+		gsub rot
+	endi
+	mvby 0 100
+*dbg: outs "Woo! I'm about to sprout!"
+
+	inst
+* calculate location of new plant agent
+	setv va00 posl
+	subv va00 20
+	setv va01 post
+	subv va01 108
+	new: comp 2 4 24401 "bendyPlant" 52 1 292
+*	random image (facing direction and stalk type)
+	setv ov00 rand 0 3
+	doif ov00 = 0 or ov00 = 2
+*	facing right
+*	pose 0
+	else
+*	facing left
+		pose 1
+	endi
+
+*	Spring color
+	setv va10 rean "bendyPlantColor Spring"
+	subv va10 1
+	sets va11 read "bendyPlantColor Spring" rand 0 va10
+	sets va12 subs va11 1 3
+	sets va13 subs va11 5 3
+	sets va14 subs va11 9 3
+	setv ov10 stoi va12
+	setv ov11 stoi va13
+	setv ov12 stoi va14
+
+*	Summer color
+	setv va10 rean "bendyPlantColor Summer"
+	subv va10 1
+	sets va11 read "bendyPlantColor Summer" rand 0 va10
+	sets va12 subs va11 1 3
+	sets va13 subs va11 5 3
+	sets va14 subs va11 9 3
+	setv ov13 stoi va12
+	setv ov14 stoi va13
+	setv ov15 stoi va14
+
+*	Autunm color
+	setv va10 rean "bendyPlantColor Autumn"
+	subv va10 1
+	sets va11 read "bendyPlantColor Autumn" rand 0 va10
+	sets va12 subs va11 1 3
+	sets va13 subs va11 5 3
+	sets va14 subs va11 9 3
+	setv ov16 stoi va12
+	setv ov17 stoi va13
+	setv ov18 stoi va14
+
+*	Winter color
+	setv va10 rean "bendyPlantColor Winter"
+	subv va10 1
+	sets va11 read "bendyPlantColor Winter" rand 0 va10
+	sets va12 subs va11 1 3
+	sets va13 subs va11 5 3
+	sets va14 subs va11 9 3
+	setv ov19 stoi va12
+	setv ov20 stoi va13
+	setv ov21 stoi va14
+
+	tick 20
+	mvto va00 va01
+	kill ownr
+	slow
+
+	subr rot
+		altr room ownr 4 0.1
+* fade out
+		setv va00 0
+		loop
+			alph va00 1
+			addv va00 8
+			wait 1
+		untl va00 >= 256
+		kill ownr
+		stop
+	retn
 endm
 
 scrp 2 4 24401 9
