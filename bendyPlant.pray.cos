@@ -9,9 +9,7 @@
 
 new: simp 2 3 24401 "bendyPlant" 1 0 447
 *First seed is inedible and invisible to creatures. Otherwise it'd be hard to start a plant.
-setv va00 195
-addv va00 16
-attr va00
+attr 210
 *bhvr 48
 perm 64
 elas 15
@@ -75,17 +73,28 @@ scrp 2 3 24401 9
 	esee 2 4 24401
 		addv va40 1
 	next
-	doif va40 > 1
+	doif va40 > 0
 *dbg: outs "<<bendy plant seed>> too crowded, 100"
 		gsub rot
 	endi
+	setv va40 0
+*	check population for 1 within 250 pixels
+	rnge 250
+	esee 2 4 24401
+		addv va40 1
+	next
+	doif va40 > 1
+*dbg: outs "<<bendy plant seed>> too crowded, 250"
+		gsub rot
+	endi
+	setv va40 0
 *	check population for 5 within 1000 pixels
-	rnge 1000
+	rnge 1750
 	esee 2 4 24401
 		addv va40 1
 	next
 	doif va40 > 5
-*dbg: outs "<<bendy plant seed>> too crowded, 1000"
+*dbg: outs "<<bendy plant seed>> too crowded, 5000"
 		gsub rot
 	endi
 *	check map boundries
@@ -107,7 +116,7 @@ scrp 2 3 24401 9
 	subv va00 20
 	setv va01 post
 	subv va01 108
-	new: comp 2 4 24401 "bendyPlant" 52 1 292
+	new: comp 2 4 24401 "bendyPlant" 52 1 392
 *	random image (facing direction and stalk type)
 	setv ov00 rand 0 3
 	doif ov00 = 0 or ov00 = 2
@@ -186,6 +195,7 @@ scrp 2 3 24401 9
 	slow
 
 	subr rot
+		targ ownr
 		altr room ownr 4 0.1
 * fade out
 		setv va00 0
@@ -257,24 +267,60 @@ scrp 2 4 24401 9
 		pose 3
 		wait 20
 		pose 4
-		wait 40
 *	flower shoot
-		anim [5 5 6 4]
-		over
+		frat 4
 		wait 40
-*	flower close
+		anim [5 5 6]
+*	make seed
+		doif mame "dir" = "left"
+			setv va20 posl
+			addv va20 10
+			setv va21 post
+			addv va21 10
+			setv va22 rand -105 -115
+		elif mame "dir" = "right"
+			setv va20 posr
+			subv va20 34
+			setv va21 post
+			addv va21 10
+			setv va22 rand -65 -75
+		endi
+		over
+		inst
+		new: simp 2 3 24401 "bendyPlant" 1 0 382
+		attr 194
+*bhvr 48
+		perm 64
+		elas 15
+		accg 6
+		fric 95
+		setv name "sean" mame "sean"
+		mvto va20 va21
+*	Shoot!
+*		Set direction
+		setv va25 va22
+*		Translate to X and Y
+		setv va26 cos_ va25
+		setv va27 sin_ va25
+*dbg: outv va26
+*dbg: outv va27
+*		Random speed
+		setv va29 rand 25 55
+		mulv va26 va29
+		mulv va27 va29
+*		Set velocity
+		velo va26 va27
+		tick 200
+		targ ownr
+		wait 2
+*	flower last shooting pose
+		pose 4
+		wait 40
+*	flower open
 		pose 3
 		wait 20
 		pose 2
 	endi
-
-*	wait 100
-*
-*	wait 100
-*
-*	slow
-
-
 
 	subr checkSean
 *		*dbg: outs "checking season"
