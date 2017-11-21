@@ -31,7 +31,7 @@ elif va42 = 1
 	setv va00 mopy
 	mvsf mopx va00
 endi
-tick 200
+tick 400
 
 *Seed eat
 scrp 2 3 24403 12
@@ -48,6 +48,10 @@ scrp 2 3 24403 9
 *	but we are in a rush so hurry it up
 		tick 20
 		stop
+	endi
+	doif mame "sean" > 2
+*dbg: outs "<<bendy plant seed>> autumn or winter seed"
+		gsub rot
 	endi
 	doif rtyp room ownr < 5 or rtyp room ownr > 7
 *dbg: outs "<<bendy plant seed>> not soil"
@@ -206,7 +210,7 @@ scrp 2 3 24403 9
 	setv ov20 stoi va13
 	setv ov21 stoi va14
 
-	tick 20
+	tick 600
 	mvto va00 va01
 	kill ownr
 	slow
@@ -214,12 +218,15 @@ scrp 2 3 24403 9
 	subr rot
 		targ ownr
 		altr room ownr 4 0.1
+		inst
+		attr 0
+		bhvr 0
 * fade out
 		setv va00 0
 		loop
 			alph va00 1
 			addv va00 8
-			wait 1
+			wait 4
 		untl va00 >= 256
 		kill ownr
 		stop
@@ -235,14 +242,14 @@ scrp 2 4 24403 9
 		endi
 * stem grow spring
 		pose 2
-		wait 20
+		wait 400
 		pose 4
 *set image offset for using the alternative mature stalk
 		base ov00
-		wait 20
+		wait 400
 		pose 6
 		sets mame "state" "stalk"
-		tick 50
+		tick 1000
 	elif mame "state" = "stalk"
 		gsub checkSean
 *set image offset for using the alternative mature stalk
@@ -267,13 +274,13 @@ scrp 2 4 24403 9
 			tint mv19 mv20 mv21 128 128
 		endi
 *		grow flower
-		wait 20
+		wait 400
 		pose 1
-		wait 20
+		wait 400
 		pose 2
-		wait 50
+		wait 600
 		sets mame "state" "flower"
-		tick 500
+		tick rand 5000 15000
 		slow
 	elif mame "state" = "flower"
 		gsub checkSean
@@ -282,11 +289,11 @@ scrp 2 4 24403 9
 *shoot a seed!
 *	flower close
 		pose 3
-		wait 20
+		wait 400
 		pose 4
 *	flower shoot
 		frat 4
-		wait 40
+		wait 600
 		anim [5 5 6]
 *	make seed
 		doif mame "dir" = "left"
@@ -327,15 +334,15 @@ scrp 2 4 24403 9
 		mulv va27 va29
 *		Set velocity
 		velo va26 va27
-		tick 200
+		tick 2000
 		targ ownr
 		wait 2
 *	flower last shooting pose
 		pose 4
-		wait 40
+		wait 600
 *	flower open
 		pose 3
-		wait 20
+		wait 400
 		pose 2
 	endi
 
@@ -350,7 +357,7 @@ scrp 2 4 24403 9
 			else
 *dbg: outs "fixing sean and pose. new sean:"
 *dbg: outv sean
-				wait 40
+				wait 800
 *	   actually elif mame "state" = "stalk" or mame "state" = "flower"
 *				Fix it
 				inst
@@ -362,13 +369,13 @@ scrp 2 4 24403 9
 *				flower wilt
 						part 1
 						pose 7
-						wait 20
+						wait 400
 *				flower fade out
 						setv va00 0
 						loop
 							alph va00 1
 							addv va00 8
-							wait 1
+							wait 4
 						untl va00 >= 256
 						ucln
 						pat: kill 1
@@ -376,12 +383,12 @@ scrp 2 4 24403 9
 *				stem melt
 					part 0
 					pose 44
-					wait 20
+					wait 400
 					pose 48
-					wait 20
+					wait 400
 *				stem spring
 					pose 6
-					wait 100
+					wait 1000
 					base 0
 					doif mame "state" = "flower"
 *					flower grow spring
@@ -396,12 +403,12 @@ scrp 2 4 24403 9
 						part 1
 						tint mv10 mv11 mv12 128 128
 *					grow flower
-						wait 20
+						wait 400
 						pose 1
-						wait 20
+						wait 400
 						pose 2
 					endi
-					wait 200
+					wait 2000
 				elif mame "sean" = 1
 * change to summer
 *					change stem
@@ -412,7 +419,7 @@ scrp 2 4 24403 9
 						part 1
 						tint mv13 mv14 mv15 128 128
 					endi
-					wait 200
+					wait 2000
 				elif mame "sean" = 2
 * change to autumn
 *				stem autumn
@@ -422,7 +429,7 @@ scrp 2 4 24403 9
 						part 1
 						tint mv16 mv17 mv18 128 128
 					endi
-					wait 200
+					wait 2000
 				elif mame "sean" = 3
 * change to winter
 					doif mame "state" = "flower"
@@ -435,7 +442,7 @@ scrp 2 4 24403 9
 						loop
 							alph va00 1
 							addv va00 8
-							wait 1
+							wait 4
 						untl va00 >= 256
 						ucln
 						pat: kill 1
@@ -443,12 +450,12 @@ scrp 2 4 24403 9
 *				stem freeze
 					part 0
 					pose 30
-					wait 20
+					wait 400
 					pose 34
-					wait 20
+					wait 400
 *				stem winter
 					pose 38
-					wait 50
+					wait 500
 					doif mame "state" = "flower"
 *					flower grow winter
 *					set flower direction
@@ -462,12 +469,12 @@ scrp 2 4 24403 9
 						part 1
 						tint mv19 mv20 mv21 128 128
 *					grow flower
-						wait 20
+						wait 400
 						pose 1
-						wait 20
+						wait 400
 						pose 2
 					endi
-					wait 200
+					wait 2000
 				endi
 			endi
 		endi
@@ -488,7 +495,7 @@ scrp 2 4 24403 9
 			next
 		endi
 	retn
-	
+
 *	dies with no guarantee of beating race conditions
 *		(may die without legacy...)
 	subr die
