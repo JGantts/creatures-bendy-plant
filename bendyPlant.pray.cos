@@ -96,13 +96,13 @@ scrp 2 3 24403 9
 		gsub rot
 	endi
 	setv va40 0
-*	check population for 5 within 1000 pixels
+*	check population for 5 within 1750pixels
 	rnge 1750
 	esee 2 4 24403
 		addv va40 1
 	next
 	doif va40 > 5
-*dbg: outs "<<bendy plant seed>> too crowded, 5000"
+*dbg: outs "<<bendy plant seed>> too crowded, 1750"
 		gsub rot
 	endi
 *	check map boundries
@@ -142,16 +142,25 @@ scrp 2 3 24403 9
 *		(injected seed is spring, so it'll always grow)
 	setv name "sean" mame "sean"
 
-*	setv va10 length of year in ticks
-*	setv va11 length of 2 years in ticks
-	setv va10 game "engine_NumberOfSeasons"
-	mulv va10 game "engine_LengthOfSeasonInDays"
-	mulv va10 game "engine_LengthOfDayInMinutes"
-	mulv va10 1200
-	setv va11 va10
-	mulv va10 2
-* goalAge is rand between 1 and 2 years
-	setv name "goalAge" rand va10 va11
+*	setv va11 1 year  from now in ticks
+*	setv va12 2 years from now in ticks
+*	setv va13 2.5 years from now in ticks
+	setv va11 game "engine_NumberOfSeasons"
+	mulv va11 game "engine_LengthOfSeasonInDays"
+	mulv va11 game "engine_LengthOfDayInMinutes"
+	mulv va11 1200
+	setv va12 va11
+	setv va13 va11
+*	mulv va11 1
+	mulv va12 2
+	mulv va13 2.5
+	addv va11 wtik
+	addv va12 wtik
+	addv va13 wtik
+* goalAge is 1 - 2 years from now
+	setv name "goalAge" rand va11 va12
+* maxAge is 2 - 2.5 years from now
+	setv name "maxAge" rand va12 va13
 
 *	Spring color
 	setv va10 rean "bendyPlantColor Spring"
@@ -330,6 +339,8 @@ scrp 2 4 24403 9
 		pose 2
 	endi
 
+*Checks season
+*Checks if we should die
 	subr checkSean
 *		*dbg: outs "checking season"
 		doif mame "sean" <> sean
@@ -460,6 +471,28 @@ scrp 2 4 24403 9
 				endi
 			endi
 		endi
+		dbg: outv mame "goalAge"
+		dbg: outv wtik
+*		*dbg: outs "checking if we should die"
+		doif wtik > mame "maxAge"
+*		time to die :(
+*			(probably no plants in sight and we're the last...)
+			gsub die
+		endi
+		doif wtik > mame "goalAge"
+			enum 2 4 24403
+				doif targ <> ownr
+*				there's someone to honor our memory, it's ok to let go
+					gsub die
+				endi
+			next
+		endi
+	retn
+	
+*	dies with no guarantee of beating race conditions
+*		(may die without legacy...)
+	subr die
+		kill ownr
 	retn
 endm
 
