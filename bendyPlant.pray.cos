@@ -15,7 +15,7 @@ perm 64
 elas 15
 accg 6
 fric 95
-*first sead is "spring" season so it'll grow.
+*first seed is "spring" season so it'll grow.
 setv name "sean" 0
 
 setv va42 0
@@ -33,6 +33,14 @@ elif va42 = 1
 endi
 tick 200
 
+*Seed eat
+scrp 2 3 24403 12
+	snde "reat"
+	stim writ from 77 1
+	kill ownr
+endm
+
+*Seed 
 scrp 2 3 24403 9
 	doif carr <> null or fall <> 0
 * we're being carried or we're falling
@@ -289,7 +297,7 @@ scrp 2 4 24403 9
 		inst
 		new: simp 2 3 24403 "bendyPlant" 1 0 382
 		attr 194
-*bhvr 48
+		bhvr 48
 		perm 64
 		elas 15
 		accg 6
