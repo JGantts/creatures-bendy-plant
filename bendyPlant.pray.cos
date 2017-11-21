@@ -17,6 +17,7 @@ perm 64
 elas 15
 accg 6
 fric 95
+*first sead is "spring" season so it'll grow.
 setv name "sean" 0
 
 setv va42 0
@@ -123,6 +124,17 @@ scrp 2 3 24401 9
 *		set from seed
 *		(injected seed is spring, so it'll always grow)
 	setv name "sean" mame "sean"
+
+*	setv va10 length of year in ticks
+*	setv va11 length of 2 years in ticks
+	setv va10 game "engine_NumberOfSeasons"
+	mulv va10 game "engine_LengthOfSeasonInDays"
+	mulv va10 game "engine_LengthOfDayInMinutes"
+	mulv va10 1200
+	setv va11 va10
+	mulv va10 2
+* goalAge is rand between 1 and 2 years
+	setv name "goalAge" rand va10 va11
 
 *	Spring color
 	setv va10 rean "bendyPlantColor Spring"
