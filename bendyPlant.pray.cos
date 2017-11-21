@@ -16,7 +16,13 @@ elas 15
 accg 6
 fric 95
 *first seed is "spring" season so it'll grow.
-setv name "sean" 0
+*	unless season is actaully summer, then use "summer"
+*	(because only spring and summer have growing sprites)
+doif sean = 1
+	setv name "sean" 1
+else
+	setv name "sean" 0
+endi
 
 setv va42 0
 doif va42 = 0
@@ -235,24 +241,40 @@ endm
 
 scrp 2 4 24403 9
 	doif mame "state" = "sprout"
-		doif mame "dir" = "right"
-			base 0
+		doif mame "sean" = 0
+*		summer
+			doif mame "dir" = "right"
+				base 0
+			else
+				base 1
+			endi
 		else
-			base 1
+*		mame "sean" = 1 ("summer") (autumn and winter seeds always rot)
+			doif mame "dir" = "right"
+				base 12
+			else
+				base 13
+			endi
 		endi
-* stem grow spring
+* stem grow
 		pose 2
 		wait 400
 		pose 4
 *set image offset for using the alternative mature stalk
 		base ov00
 		wait 400
-		pose 6
+		doif mame "sean" = 0
+*		spring
+			pose 6
+		else
+*		summer
+			pose 18
+		endi
 		sets mame "state" "stalk"
 		tick 1000
 	elif mame "state" = "stalk"
 		gsub checkSean
-*set image offset for using the alternative mature stalk
+*set image offset for using the alternative mature stalk (2 choices x 2 directions)
 		base ov00
 * flower grow
 		doif mame "dir" = "right"
@@ -478,8 +500,8 @@ scrp 2 4 24403 9
 				endi
 			endi
 		endi
-		dbg: outv mame "goalAge"
-		dbg: outv wtik
+*dbg: outv mame "goalAge"
+*dbg: outv wtik
 *		*dbg: outs "checking if we should die"
 		doif wtik > mame "maxAge"
 *		time to die :(
