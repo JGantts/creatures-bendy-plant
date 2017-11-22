@@ -55,7 +55,7 @@ scrp 2 3 24403 9
 		tick 20
 		stop
 	endi
-	doif mame "sean" > 2
+	doif mame "sean" > 1
 *dbg: outs "<<bendy plant seed>> autumn or winter seed"
 		gsub rot
 	endi
@@ -258,11 +258,11 @@ scrp 2 4 24403 9
 		endi
 * stem grow
 		pose 2
-		wait 400
+		wait 1200
 		pose 4
 *set image offset for using the alternative mature stalk
 		base ov00
-		wait 400
+		wait 1200
 		doif mame "sean" = 0
 *		spring
 			pose 6
@@ -271,7 +271,7 @@ scrp 2 4 24403 9
 			pose 18
 		endi
 		sets mame "state" "stalk"
-		tick 1000
+		tick 1200
 	elif mame "state" = "stalk"
 		gsub checkSean
 *set image offset for using the alternative mature stalk (2 choices x 2 directions)
@@ -302,7 +302,7 @@ scrp 2 4 24403 9
 		pose 2
 		wait 600
 		sets mame "state" "flower"
-		tick rand 5000 15000
+		tick rand 1200 2400
 		slow
 	elif mame "state" = "flower"
 		gsub checkSean
@@ -366,11 +366,13 @@ scrp 2 4 24403 9
 		pose 3
 		wait 400
 		pose 2
+		tick rand 2400 3600
 	endi
 
 *Checks season
 *Checks if we should die
 	subr checkSean
+		targ ownr
 *		*dbg: outs "checking season"
 		doif mame "sean" <> sean
 *			plant's internal season needs to be fixed
@@ -384,8 +386,7 @@ scrp 2 4 24403 9
 *				Fix it
 				inst
 				lock
-				setv mame "sean" sean
-				doif mame "sean" = 0
+				doif sean = 0
 * change to spring
 					doif mame "state" = "flower"
 *				flower wilt
@@ -430,8 +431,9 @@ scrp 2 4 24403 9
 						wait 400
 						pose 2
 					endi
-					wait 2000
-				elif mame "sean" = 1
+					setv mame "sean" 0
+					wait rand 600 1200
+				elif sean = 1
 * change to summer
 *					change stem
 					part 0
@@ -441,8 +443,9 @@ scrp 2 4 24403 9
 						part 1
 						tint mv13 mv14 mv15 128 128
 					endi
+					setv mame "sean" 1
 					wait 2000
-				elif mame "sean" = 2
+				elif sean = 2
 * change to autumn
 *				stem autumn
 					part 0
@@ -451,7 +454,8 @@ scrp 2 4 24403 9
 						part 1
 						tint mv16 mv17 mv18 128 128
 					endi
-					wait 2000
+					setv mame "sean" 2
+					wait rand 600 1200
 				elif mame "sean" = 3
 * change to winter
 					doif mame "state" = "flower"
@@ -496,7 +500,8 @@ scrp 2 4 24403 9
 						wait 400
 						pose 2
 					endi
-					wait 2000
+					setv mame "sean" 3
+					wait rand 600 1200
 				endi
 			endi
 		endi
